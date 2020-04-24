@@ -1,0 +1,23 @@
+{
+  "name": "pokeswap",
+  "version": "1.0.0",
+  "description": "Desktop application for coordinating partial save data swapping in gen3 pokemon games",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vacuousplanet/pokeswap.git"
+  },
+  "author": "Adam Kagel, Maclean Hartford",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vacuousplanet/pokeswap/issues"
+  },
+  "homepage": "https://github.com/vacuousplanet/pokeswap#readme",
+  "devDependencies": {
+    "electron": "^8.2.3"
+  }
+}

@@ -6,7 +6,7 @@ Desktop application for coordinating partial save data swapping in gen3 pokemon 
 
  ## Build instructions
  Build with
-    npm install
+    `npm install`
 
 Run with
-    npm start
+    `npm start`

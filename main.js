@@ -1,7 +1,9 @@
+// call to get electron objects
 const { app, BrowserWindow} = require('electron')
 
+// function creates browser window with index.html
 function createWindow () {
-  // Create the browser window.
+
   let win = new BrowserWindow({
     width: 800,
     height: 600,
@@ -10,12 +12,14 @@ function createWindow () {
     }
   })
 
-  // and load the index.html of the app.
-  win.loadFile('index.html')
+  // html injection point
+  win.loadFile('./app/index.html')
 }
 
+// create + display window when ready
 app.whenReady().then(createWindow)
 
+// quit application on window close
 app.on('window-all-closed', () => {
     app.quit()
 })

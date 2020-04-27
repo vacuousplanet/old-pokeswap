@@ -14,6 +14,9 @@ function createWindow () {
 
   // html injection point
   win.loadFile('./app/index.html')
+
+  // dev Tools
+  win.webContents.openDevTools()
 }
 
 // create + display window when ready

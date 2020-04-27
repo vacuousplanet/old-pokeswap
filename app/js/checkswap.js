@@ -4,7 +4,7 @@
 const fs = require('fs')
 
 const filename1 = process.argv.slice(2)[0]
-//const filename2 = process.argv.slice(3)[0]
+const filename2 = process.argv.slice(3)[0]
 
 // a note about sections in save data
 // they do not need to be ordered apparently
@@ -16,8 +16,8 @@ const sectionID_offset = 0x0FF4
 const checksum_offset = 0x0FF6
 const saveidx_offset = 0x0FFC
 
-//const team_offset = 0x0234
-//const team_length = 604
+const team_offset = 0x0234
+const team_length = 604
 
 // find most recent save (A/B)
 // loop through sections
@@ -27,24 +27,45 @@ const saveidx_offset = 0x0FFC
 // compute new checksums and fill at checksum_offset + section start
 // done (?)
 
-function checkswap(filename1/*, filename2*/){
+function checkswap(filename1, filename2){
     let buffer1 = fs.readFileSync(filename1)
-    //let buffer2 = fs.readFileSync(filename2)
+    let buffer2 = fs.readFileSync(filename2)
 
     let save_offset1 = buffer1[saveidx_offset] > buffer1[0xE000+saveidx_offset] ? 0x00000 : 0xE000
-    //let save_offset2 = buffer2[saveidx_offset] > buffer2[0xE0000+saveidx_offset] ? 0x00000 : 0xE0000
+    let save_offset2 = buffer2[saveidx_offset] > buffer2[0xE000+saveidx_offset] ? 0x00000 : 0xE000
 
+    let section_start1 = 0x0000
     //loop1
     for(let i = save_offset1; i < 0xE000+save_offset1; i += 0x1000){
         if(buffer1[i+sectionID_offset] == 0x01){
-            // get ints as data buffer?
-            console.log(buffer1.slice(i+checksum_offset,i+checksum_offset+8))
-            buffer1.writeUInt16LE(CRC32(buffer1.slice(i,i+section_data_size)),i+checksum_offset)
-            //console.log(CRC32(buffer1.slice(i, i+section_data_size)).toString(16))
-            console.log(buffer1.slice(i+checksum_offset,i+checksum_offset+8))
+            section_start1 = i
             break
         }
     }
+
+    //loop2
+    let section_start2 = 0x0000
+    for(let i = save_offset2; i < 0xE000+save_offset2; i += 0x1000){
+        if(buffer2[i+sectionID_offset] == 0x01){
+            section_start2 = i
+            break
+        }
+    }
+
+    // do lazy swap
+    let a1 = Buffer.from(buffer1.subarray(section_start1+team_offset, section_start1+team_offset+team_length))
+    buffer2.copy(buffer1, section_start1+team_offset, section_start2+team_offset, section_start2+team_offset+team_length)
+    a1.copy(buffer2, section_start2+team_offset)
+
+    // compute and fill checksums
+    buffer1.writeUInt16LE(CRC32(buffer1.slice(section_start1,section_start1+section_data_size)),section_start1+checksum_offset)
+    buffer2.writeUInt16LE(CRC32(buffer2.slice(section_start2,section_start2+section_data_size)),section_start2+checksum_offset)
+
+    // overwrite files
+    fs.writeFileSync(filename1,buffer1)
+    fs.writeFileSync(filename2,buffer2)
+
+    return
 }
 
 function CRC32(data){
@@ -94,4 +115,4 @@ function checkswap(filename1, filename2){
     return lines.join('\n')
 } */
 
-checkswap(filename1/*, filename2*/)
+checkswap(filename1, filename2)

@@ -1,24 +1,39 @@
-//let {checkswap} = require('./checkswap')
+console.log(__filename)
+
+const {dialog} = require("electron").remote
+const {checkswap, verify} = require('./js/checkswap.js')
 
 let file1 = document.getElementById("file1")
 let file2 = document.getElementById("file2")
 
 let start = document.getElementById("start")
 
-//let test = document.getElementById('test')
+let filename1 = ''
+let filename2 = ''
 
-console.log('script works')
-
-file1.addEventListener('change', function() {
-    console.log('eyo')
+file1.addEventListener("click", function(){
+    filename1 = dialog.showOpenDialogSync()[0]
+    console.log(`Locally uploaded ${filename1}`)
 })
 
+file2.addEventListener("click", function(){
+    filename2 = dialog.showOpenDialogSync()[0]
+    console.log(`Opponent uploaded ${filename2}`)
+})
+
+//let test = document.getElementById('test')
+
+//console.log('script works')
+
 start.addEventListener("click", function() {
-    if(file1.files.length != 0 && file2.files.length != 0){
-        //checkswap(URL.createObjectURL(file1.files[0]), URL.createObjectURL(file2.files[0]))
-        console.log("All the files are uploaded!")
+
+    if(verify(filename1) && verify(filename2)){
+        console.log("Swapping files...")
+        checkswap(filename1, filename2)
+        console.log("Saves should now be swapped!")
     }
     else{
-        console.log("Not all files uploaded!")
+        console.log("Uploaded files did not pass save file verification!")
     }
+
 })

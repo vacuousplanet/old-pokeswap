@@ -1,10 +1,4 @@
-// test usage:
-// node checkswap.js file1 file2
-
 const fs = require('fs')
-
-//const filename1 = process.argv.slice(2)[0]
-//const filename2 = process.argv.slice(3)[0]
 
 // section dependent structure ( probably move into dictionary )
 const section_data_size = 0x0F80
@@ -15,7 +9,7 @@ const checksum_offset = 0x0FF6
 const saveidx_offset = 0x0FFC
 
 // R/S/E offset is 0x0234
-// FR/LG specific offset ( move into dictionary later )
+// FR/LG specific offset ( move into dictionary/json later )
 const team_offset = 0x0034
 const team_length = 604
 
@@ -86,7 +80,8 @@ exports.checkswap = function(filename1, filename2){
     return
 }
 
-exports.verify = function(candidate){
+// verify that saves are valid
+exports.validate_saves = function(candidate1, candidate2){
     return true
 }
 
